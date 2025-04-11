@@ -1,14 +1,19 @@
-import './App.css'
-import Login from './pages/Login'
+import "./App.css";
+import Home from "./pages/Home";
+import Login from "./pages/Login";
+import { Routes, Route } from "react-router";
+import NotFound from "./pages/NotFound";
 
 function App() {
-
   return (
     <>
-      <h1>Hello</h1>
-      <Login />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="*" element={<NotFound/>} />
+      </Routes>
     </>
-  )
+  );
 }
 
-export default App
+export default App;

@@ -7,10 +7,9 @@ const Login = () => {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     try {
-        const result = await client.auth.signInWithOtp({
+         await client.auth.signInWithOtp({
             email,
         });
-        console.log(result);
     } catch (error) {
         console.log(error);
         
@@ -20,6 +19,8 @@ const Login = () => {
 
   return (
     <form onSubmit={handleSubmit}>
+      <h1>Login</h1>
+      <label htmlFor="email">Email </label>
       <input
         type="email"
         name="email"
