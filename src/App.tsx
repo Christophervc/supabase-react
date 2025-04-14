@@ -7,25 +7,25 @@ import { useEffect } from "react";
 import { supabase } from "./supabase/client";
 
 function App() {
+  
   const navigate = useNavigate();
 
   useEffect(() => {
-    supabase.auth.onAuthStateChange((event, session) => {
-      if(!session){
-        navigate("/login")
-      } else{
-        navigate("/")
+    supabase.auth.onAuthStateChange((session) => {
+      if (!session) {
+        navigate("/login");
+      } else {
+        navigate("/");
       }
-    }
-    );
-  }, [])
-  
+    });
+  }, []);
+ 
   return (
     <>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
-        <Route path="*" element={<NotFound/>} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </>
   );

@@ -4,6 +4,7 @@ import { useNavigate } from "react-router";
 
 
 const Login = () => {
+  
   const [email, setEmail] = useState<string>("");
 
   const handleSubmit = async (event: React.FormEvent) => {
@@ -18,12 +19,17 @@ const Login = () => {
     console.log(email);
   };
 
+  
+
   const navigate = useNavigate();
   useEffect(() => {
+
     if (supabase.auth.getUser() != null) {
       navigate("/");
     }
-  }, [navigate]);
+  }, [navigate]); 
+  
+  
 
   return (
     <form onSubmit={handleSubmit}>

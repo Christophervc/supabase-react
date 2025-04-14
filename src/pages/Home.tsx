@@ -5,7 +5,7 @@ import { useNavigate } from "react-router";
 import TaskForm from "../components/TaskForm";
 
 const Home = () => {
-  const navigate = useNavigate();
+ const navigate = useNavigate();
 
   useEffect(() => {
     if (supabase.auth.getUser() == null) {

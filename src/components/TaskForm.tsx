@@ -1,12 +1,29 @@
 import { useState } from "react";
-import {supabase} from "../supabase/client";
+import { supabase } from "../supabase/client";
 
 const TaskForm = () => {
-  const [Task, setTask] = useState<string>("");
-
-  const handleSubmit = (e: React.FormEvent) => {
+  
+  const [task, setTask] = useState<string>("");
+  
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(Task);
+    try {
+      const {data:{user}} = await supabase.auth.getUser();
+
+      if (!user) {
+        console.error("User not authenticated, please log in.");
+        return;
+      }
+
+      const result = await supabase.from("tasks").insert({
+        name: task,
+        user_id: user?.id,
+      });
+      
+      console.log("Task added successfully", result);
+    } catch (error) {
+      console.error("Error adding task:", error);
+    }
     setTask("");
   };
 
@@ -19,6 +36,7 @@ const TaskForm = () => {
           name="task"
           id="task"
           placeholder="Enter task"
+          value={task}
           onChange={(e) => setTask(e.target.value)}
         />
         <button type="submit">Add Task</button>
