@@ -5,10 +5,11 @@ import { useNavigate } from "react-router";
 import TaskForm from "../components/TaskForm";
 
 const Home = () => {
- const navigate = useNavigate();
+const navigate = useNavigate();
 
-  useEffect(() => {
-    if (supabase.auth.getUser() == null) {
+  useEffect( () => {
+    const user =  supabase.auth.getUser();
+    if ( user == null) {
       navigate("/login");
     }
   }, [navigate]);
@@ -16,6 +17,7 @@ const Home = () => {
   return (
     <>
       <div>Hello</div>
+
       <button onClick={() => supabase.auth.signOut()}> Log out</button>
       <TaskForm/>
     </>
