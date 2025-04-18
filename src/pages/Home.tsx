@@ -1,16 +1,17 @@
-
 import { supabase } from "../supabase/client";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import TaskForm from "../components/TaskForm";
 import TaskList from "../components/TaskList";
 
 const Home = () => {
-const navigate = useNavigate();
+  const navigate = useNavigate();
 
-  useEffect( () => {
-    const user =  supabase.auth.getUser();
-    if ( user == null) {
+  const [showcompletedTask, setShowCompletedTask] = useState<boolean>(false);
+
+  useEffect(() => {
+    const user = supabase.auth.getUser();
+    if (user == null) {
       navigate("/login");
     }
   }, [navigate]);
@@ -19,8 +20,16 @@ const navigate = useNavigate();
     <>
       <div>Hello</div>
       <button onClick={() => supabase.auth.signOut()}> Log out</button>
-      <TaskForm/>
-      <TaskList/>
+      <TaskForm />
+      <label>Pending tasks</label>
+      <button
+        onClick={() => {
+          setShowCompletedTask(!showcompletedTask);
+        }}
+      >
+        show completed
+      </button>
+      <TaskList completed={showcompletedTask} />
     </>
   );
 };

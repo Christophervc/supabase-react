@@ -2,12 +2,13 @@ import { useEffect } from "react";
 import { useTaskStore } from "../store/taskStore";
 import TaskCard from "./TaskCard";
 
-const TaskList = () => {
+const TaskList = ({completed=false}) => {
   const { tasks, getTasks } = useTaskStore();
 
   useEffect(() => {
-    getTasks();
-  }, []);
+    getTasks(completed);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [completed]);
 
   return (
     <>

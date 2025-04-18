@@ -9,7 +9,7 @@ interface TaskState {
   ) => void;
   updateTask: (
     taskId: number,
-    updates: Partial<Omit<Task, "id" | "created_at">>
+    updates: Partial<Omit<Task, "id" | "created_at" | "user_id" | "name">>
   ) => void;
   deleteTask: (taskId: number) => void;
   getTasks: (completed?: boolean) => Promise<void>;
@@ -74,9 +74,23 @@ export const useTaskStore = create<TaskState>((set) => ({
 
   updateTask: async (
     taskId: number,
+    updates: Partial<Omit<Task, "id" | "created_at" | "user_id" | "name">>
+  ) => {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    const { error } = await supabase
+      .from("tasks")
+      .update(updates)
+      .eq("user_id", user?.id || "")
+      .eq("id", taskId)
+      .select();
+    if (error) throw error;
 
-    updates: Partial<Omit<Task, "id" | "created_at">>
-  ) => {},
+    set((state) => ({
+      tasks: state.tasks.filter((task) => task.id !== taskId)
+    }));
+  },
 
   deleteTask: async (taskId: number) => {
     const {
