@@ -9,7 +9,6 @@ const TaskForm = () => {
   
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
     addTask({name: newTask});
     setNewTask("");
   };

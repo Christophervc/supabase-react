@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useTaskStore } from "../store/taskStore";
+import TaskCard from "./TaskCard";
 
 const TaskList = () => {
   const { tasks, getTasks } = useTaskStore();
@@ -11,16 +12,11 @@ const TaskList = () => {
   return (
     <>
       {tasks.length > 0 ? (
-        <ul>
+        <div style={{ display: "flex", flexDirection: "column",  gap: "10px", marginTop: "10px" }}>
           {tasks.map((task) => (
-            <li key={task.id}>
-              <span>{task.name}</span>
-              <span style={{ marginLeft: "15px" }}>
-                {task.completed ? "Completed" : "Not Completed"}
-              </span>
-            </li>
+              <TaskCard key={task.id} id={task.id} name={task.name} completed={task.completed} user_id={task.user_id}/>
           ))}
-        </ul>
+        </div>
       ) : (
         <p>No pending Tasks!!</p>
       )}
