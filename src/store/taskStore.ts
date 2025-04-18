@@ -4,7 +4,7 @@ import { supabase } from "../supabase/client";
 
 interface TaskState {
   tasks: Task[];
-  addTask: (task: Omit<Task, "id" | "created_at" | "completed">) => void;
+  addTask: (task: Omit<Task, "id" | "created_at" | "completed" | "user_id">) => void;
   updateTask: (
     taskId: number,
     updates: Partial<Omit<Task, "id" | "created_at">>
@@ -13,10 +13,37 @@ interface TaskState {
   getTasks: () => Promise<void>;
 }
 
-export const useTaskStore = create<TaskState>((set, get) => ({
+export const useTaskStore = create<TaskState>((set) => ({
   tasks: [],
 
-  addTask: async (newTask: Omit<Task, "id" | "created_at" | "completed">) => {},
+  addTask: async (newTask: Omit<Task, "id" | "created_at" | "completed" | "user_id">) => {
+    const {data} = await supabase.auth.getUser();
+    const {user} = data;
+    if (!user) {
+      console.error("User not authenticated, please log in.");
+      return;
+    }
+
+    try {
+      /*const {data: { user },} = await supabase.auth.getUser();*/
+      const {data: insertedData, error} = await supabase.from("tasks").insert({
+        name: newTask.name,
+        user_id: user?.id,
+      }).select();
+
+      if(error) throw error;
+      
+      if (insertedData && insertedData.length> 0) {
+        console.log("Task added successfully", insertedData[0]);
+        set((state) => ({
+          tasks: [...state.tasks, { ...insertedData[0], completed: false }],
+        }));
+      }
+
+    } catch (error) {
+      console.error("Error adding task:", error);
+    }
+  },
 
   updateTask: async (
     taskId: number,
@@ -27,12 +54,17 @@ export const useTaskStore = create<TaskState>((set, get) => ({
   deleteTask: async (taskId: number) => {},
 
   getTasks: async () => {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
 
-    const {data:{user}} = await supabase.auth.getUser();
-    
-    const { data, error } = await supabase.from("tasks").select().eq("user_id", user?.id).order("id", { ascending: true });
+    const { data, error } = await supabase
+      .from("tasks")
+      .select()
+      .eq("user_id", user?.id)
+      .order("id", { ascending: true });
 
-    console.log (data);
+    console.log(data);
 
     if (error) {
       console.error("Error fetching tasks:", error);

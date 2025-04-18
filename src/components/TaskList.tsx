@@ -14,8 +14,10 @@ const TaskList = () => {
         <ul>
           {tasks.map((task) => (
             <li key={task.id}>
-              <span>{task.name}</span><br/>
-              <span>{task.completed ? "Completed" : "Not Completed"}</span>
+              <span>{task.name}</span>
+              <span style={{ marginLeft: "15px" }}>
+                {task.completed ? "Completed" : "Not Completed"}
+              </span>
             </li>
           ))}
         </ul>
