@@ -7,7 +7,8 @@ const LoginGithubButton = () => {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "github",
         options: {
-          redirectTo: redirectUrl,
+          redirectTo:
+            redirectUrl,
         },
       });
 
@@ -15,7 +16,8 @@ const LoginGithubButton = () => {
     } catch (error) {
       console.error("Error logging in with GitHub:", error);
     }
-  };
+  }
+  
   return <button onClick={handleGithubLogin}>Login with GitHub</button>;
 };
 

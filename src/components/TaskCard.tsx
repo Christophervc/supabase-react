@@ -1,6 +1,17 @@
 import { Task } from "../types/task";
 import { useTaskStore } from "../store/taskStore";
 
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "./ui/button";
+import { Trash } from "lucide-react";
+
 const TaskCard = (task: Task) => {
   const { deleteTask, updateTask } = useTaskStore();
 
@@ -14,37 +25,26 @@ const TaskCard = (task: Task) => {
 
   return (
     <>
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-evenly",
-          gap: "10px",
-          marginBottom: "10px",
-          border: "1px solid #b3b3b3",
-          borderRadius: "4px",
-          padding: "5px",
-        }}
-      >
-        <span>{task.name}</span>
-        <span style={{ marginLeft: "15px" }}>
-          {task.completed ? "Completed" : "Not Completed"}
-        </span>
-        <div style={{ display: "flex", gap: "10px" }}>
-          <button
-            style={{ background: "#008000", color: "white" }}
-            onClick={() => handleUpdate()}
-          >
+      <Card>
+        <CardHeader className="flex flex-row justify-between">
+          <CardTitle className="text-bold">{task.name}</CardTitle>
+          <CardDescription>
+            {task.completed ? "Completed" : "Not Completed"}
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <p>Task Description</p>
+        </CardContent>
+        <CardFooter className="flex flex-row gap-3">
+          <Button onClick={() => handleUpdate()}>
             {task.completed ? "Undo" : "Complete"}
-          </button>
-          <button
-            style={{ background: "#9c1708", color: "white" }}
-            onClick={() => handleDelete()}
-          >
+          </Button>
+          <Button variant="destructive" onClick={() => handleDelete()}>
+            <Trash className="w-4 h-4 mr-1" />
             Delete
-          </button>
-        </div>
-      </div>
+          </Button>
+        </CardFooter>
+      </Card>
     </>
   );
 };
