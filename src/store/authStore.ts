@@ -1,0 +1,131 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { create } from "zustand";
+import { supabase } from "../supabase/client";
+
+interface AuthState {
+  user: any | null;
+  loading: boolean;
+  sent: boolean;
+  error: string | null;
+  initialized: boolean;
+  getUser: () => Promise<any | null>;
+  logout: () => Promise<void>;
+  loginWithMagicLink: (email: string) => Promise<void>;
+  loginWithGitHub: () => Promise<void>;
+  loginWithGoogle: () => Promise<void>;
+}
+
+export const useAuthStore = create<AuthState>((set) => {
+  const initialize = async () => {
+    try {
+      set({ loading: true });
+      const { data, error } = await supabase.auth.getUser();
+
+      if (error) throw error;
+
+      set({ user: data.user, loading: false, initialized: true });
+    } catch (error: any) {
+      console.error("Auth initialization error:", error);
+      set({ error: error.message, loading: false, initialized: true });
+    }
+  };
+
+  initialize();
+
+  supabase.auth.onAuthStateChange((event, session) => {
+    console.log(event, session);
+    if (session) {
+      set({ user: session.user });
+    } else {
+      set({ user: null });
+    }
+  });
+
+  const redirectUrl = import.meta.env.VITE_SUPABASE_CALLBACK_URL as string;
+
+  return {
+    user: null,
+    loading: true,
+    error: null,
+    initialized: false,
+    sent: false,
+
+    loginWithMagicLink: async (email: string) => {
+      try {
+        set({ loading: true, error: null, sent: false });
+
+        const { error } = await supabase.auth.signInWithOtp({
+          email,
+          options:{
+            emailRedirectTo: redirectUrl
+          },
+        });
+
+        if (error) throw error;
+        set({ loading: false, sent: true });
+      } catch (error: any) {
+        console.log(error);
+        set({ error: error.message, loading: false, sent: false });
+      }
+    },
+
+    loginWithGitHub: async () => {
+      try {
+        set({ loading: true, error: null });
+        const { error } = await supabase.auth.signInWithOAuth({
+          provider: "github",
+          options: {
+            redirectTo: redirectUrl,
+          },
+        });
+        if (error) throw error;
+        set({ loading: false });
+      } catch (error: any) {
+        console.error("Error logging in with GitHub:", error);
+        set({ error: error.message, loading: false });
+      }
+    },
+
+    loginWithGoogle: async () => {
+      try {
+        set({ loading: true, error: null });
+        const { error } = await supabase.auth.signInWithOAuth({
+          provider: "google",
+          options: {
+            redirectTo: redirectUrl,
+          },
+        });
+
+        if (error) throw error;
+        set({ loading: false });
+      } catch (error: any) {
+        console.error("Error logging in with Google:", error);
+        set({ error: error.message, loading: false });
+      }
+    },
+
+    getUser: async () => {
+      try {
+        const { data, error } = await supabase.auth.getUser();
+
+        if (error) throw error;
+
+        set({ user: data.user });
+        return data.user;
+      } catch (error: any) {
+        set({ error: error.message });
+        return null;
+      }
+    },
+
+    logout: async () => {
+      try {
+        const { error } = await supabase.auth.signOut();
+        if (error) throw error;
+        set({ user: null });
+      } catch (error: any) {
+        set({ error: error.message });
+      }
+    },
+  };
+});

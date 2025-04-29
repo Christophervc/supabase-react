@@ -19,9 +19,7 @@ export const useTaskStore = create<TaskState>((set) => ({
   tasks: [],
 
   getTasks: async (completed = false) => {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    const {data: { user }} = await supabase.auth.getUser();
 
     const { data, error } = await supabase
       .from("tasks")

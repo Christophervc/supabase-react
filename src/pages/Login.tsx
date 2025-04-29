@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { supabase } from "../supabase/client";
 import { Github } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,60 +11,29 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { useAuthStore } from "@/store/authStore";
 
 const Login = () => {
+  const {
+    loginWithGoogle,
+    loginWithGitHub,
+    loginWithMagicLink,
+    loading,
+    sent,
+  } = useAuthStore();
   const [email, setEmail] = useState<string>("");
-  const redirectUrl = import.meta.env.VITE_SUPABASE_CALLBACK_URL as string;
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    try {
-      await supabase.auth.signInWithOtp({
-        email,
-      });
-    } catch (error) {
-      console.log(error);
-    }
-    console.log(email);
-  };
-
-  const handleGithubLogin = async () => {
-    try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: "github",
-        options: {
-          redirectTo: redirectUrl,
-        },
-      });
-
-      if (error) throw error;
-    } catch (error) {
-      console.error("Error logging in with GitHub:", error);
-    }
-  };
-
-  const [isLoading, setIsLoading] = useState(false);
-  const [isSent, setIsSent] = useState(false);
-  const handleMagicLinkLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-
-    // This would connect to your authentication backend
-    // Example: await sendMagicLink(email)
-
-    // Simulating API call
-    setTimeout(() => {
-      setIsLoading(false);
-      setIsSent(true);
-    }, 1500);
+    await loginWithMagicLink(email);
+    setEmail("");
   };
 
   return (
     <>
-     
       <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-12 sm:px-6 lg:px-8">
         <Card className="w-full max-w-md">
-          <CardHeader className="space-y-1">
+          <CardHeader>
             <CardTitle className="text-2xl font-bold text-center">
               Sign in
             </CardTitle>
@@ -73,9 +41,14 @@ const Login = () => {
               Choose your preferred sign in method
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="my-4">
             <div className="space-y-2">
-              <Button variant="outline" className="w-full" disabled={isLoading}>
+              <Button
+                variant="outline"
+                className="w-full cursor-pointer"
+                disabled={loading}
+                onClick={loginWithGoogle}
+              >
                 <svg
                   className="mr-2 h-4 w-4"
                   aria-hidden="true"
@@ -96,16 +69,16 @@ const Login = () => {
 
               <Button
                 variant="outline"
-                className="w-full"
-                disabled={isLoading}
-                onClick={handleGithubLogin}
+                className="w-full cursor-pointer"
+                disabled={loading}
+                onClick={loginWithGitHub}
               >
                 <Github className="mr-2 h-4 w-4" />
                 Login with GitHub
               </Button>
             </div>
 
-            <div className="relative">
+            <div className="relative mt-4 mb-4">
               <div className="absolute inset-0 flex items-center">
                 <Separator className="w-full" />
               </div>
@@ -115,25 +88,23 @@ const Login = () => {
                 </span>
               </div>
             </div>
-
-            {!isSent ? (
+            {!sent ? (
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="space-y-2">
                   <Input
                     id="email"
                     placeholder="name@example.com"
                     type="email"
-                    autoCapitalize="none"
-                    autoComplete="email"
-                    autoCorrect="off"
-                    disabled={isLoading}
                     value={email}
-                    onChange={(event) => setEmail(event.target.value)}
-                    required
+                    onChange={(e) => setEmail(e.target.value)}
                   />
                 </div>
-                <Button type="submit" className="w-full" disabled={isLoading}>
-                  {isLoading ? "Sending..." : "Send Magic Link"}
+                <Button
+                  type="submit"
+                  className="w-full cursor-pointer"
+                  disabled={loading}
+                >
+                  {loading ? "Sending..." : "Login with Magic Link"}
                 </Button>
               </form>
             ) : (
@@ -164,6 +135,9 @@ const Login = () => {
           <CardFooter className="flex flex-col space-y-2">
             <div className="text-sm text-center text-gray-500">
               Don&apos;t have an account?{" "}
+              <span className="underline font-medium hover:underline">
+                Sign up
+              </span>
             </div>
           </CardFooter>
         </Card>
