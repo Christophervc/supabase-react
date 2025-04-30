@@ -32,9 +32,8 @@ const TaskCard = (task: Task) => {
             {task.completed ? "Completed" : "Not Completed"}
           </CardDescription>
         </CardHeader>
-        <CardContent>
-          <p>Task Description</p>
-        </CardContent>
+        { task.description && (<CardContent>{task.description}</CardContent>)}
+        
         <CardFooter className="flex flex-row gap-3">
           <Button className="cursor-pointer" onClick={() => handleUpdate()}>
             {task.completed ? "Undo" : "Done"}

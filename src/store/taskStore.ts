@@ -10,7 +10,7 @@ interface TaskState {
   ) => void;
   updateTask: (
     taskId: number,
-    updates: Partial<Omit<Task, "id" | "created_at" | "user_id" | "name">>
+    updates: Partial<Omit<Task, "id" | "created_at" | "user_id" | "name" | "description">>
   ) => void;
   deleteTask: (taskId: number) => void;
   getTasks: (completed?: boolean) => Promise<void>;
@@ -59,6 +59,7 @@ export const useTaskStore = create<TaskState>((set) => ({
         .from("tasks")
         .insert({
           name: newTask.name,
+          description: newTask.description,
           user_id: user?.id,
         })
         .select();
@@ -78,7 +79,7 @@ export const useTaskStore = create<TaskState>((set) => ({
 
   updateTask: async (
     taskId: number,
-    updates: Partial<Omit<Task, "id" | "created_at" | "user_id" | "name">>
+    updates: Partial<Omit<Task, "id" | "created_at" | "user_id" | "name" | "description">>
   ) => {
     const {
       data: { user },

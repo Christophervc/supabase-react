@@ -36,6 +36,7 @@ const TaskList = ({ completed = false }) => {
               key={task.id}
               id={task.id}
               name={task.name}
+              description={task.description}
               completed={task.completed}
               user_id={task.user_id}
             />
