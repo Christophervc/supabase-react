@@ -37,7 +37,7 @@ const TaskCard = (task: Task) => {
         </CardContent>
         <CardFooter className="flex flex-row gap-3">
           <Button className="cursor-pointer" onClick={() => handleUpdate()}>
-            {task.completed ? "Undo" : "Completed"}
+            {task.completed ? "Undo" : "Done"}
           </Button>
           <Button variant="destructive" className="cursor-pointer"  onClick={() => handleDelete()}>
             <Trash className="w-4 h-4 mr-1" />

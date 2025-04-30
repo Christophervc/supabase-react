@@ -4,6 +4,7 @@ import { supabase } from "../supabase/client";
 
 interface TaskState {
   tasks: Task[];
+  loading: boolean;
   addTask: (
     task: Omit<Task, "id" | "created_at" | "completed" | "user_id">
   ) => void;
@@ -17,9 +18,14 @@ interface TaskState {
 
 export const useTaskStore = create<TaskState>((set) => ({
   tasks: [],
+  loading: true,
 
   getTasks: async (completed = false) => {
-    const {data: { user }} = await supabase.auth.getUser();
+    set({ loading: true });
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
 
     const { data, error } = await supabase
       .from("tasks")
@@ -34,7 +40,7 @@ export const useTaskStore = create<TaskState>((set) => ({
       console.error("Error fetching tasks:", error);
       return;
     }
-    set({ tasks: data || [] });
+    set({ tasks: data ?? [], loading: false });
   },
 
   addTask: async (
@@ -86,7 +92,7 @@ export const useTaskStore = create<TaskState>((set) => ({
     if (error) throw error;
 
     set((state) => ({
-      tasks: state.tasks.filter((task) => task.id !== taskId)
+      tasks: state.tasks.filter((task) => task.id !== taskId),
     }));
   },
 

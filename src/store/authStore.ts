@@ -1,14 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { create } from "zustand";
 import { supabase } from "../supabase/client";
+import { User } from "@supabase/supabase-js";
 
 interface AuthState {
-  user: any | null;
+  user: User | null;
   loading: boolean;
   sent: boolean;
   error: string | null;
   initialized: boolean;
-  getUser: () => Promise<any | null>;
+  getUser: () => Promise<User | null>;
   logout: () => Promise<void>;
   loginWithMagicLink: (email: string) => Promise<void>;
   loginWithGitHub: () => Promise<void>;

@@ -12,7 +12,7 @@ import {
 import { ListTodoIcon, LogOut } from "lucide-react";
 import { useAuthStore } from "@/store/authStore";
 
-const Header = () => {
+const TopNav = () => {
   const logout = useAuthStore((state) => state.logout);
   const user = useAuthStore((state) => state.user);
 
@@ -48,7 +48,7 @@ const Header = () => {
                     <p className="text-sm font-medium leading-none">
                       {user?.user_metadata.full_name}
                     </p>
-                    <p className="text-xs leading-none text-muted-foreground">
+                    <p className="text-sm leading-none text-muted-foreground">
                       {user?.email}
                     </p>
                   </div>
@@ -57,7 +57,7 @@ const Header = () => {
 
                 <DropdownMenuItem onClick={logout} className="cursor-pointer">
                   <LogOut className="mr-2 h-4 w-4" />
-                  Log out
+                   <p className="font-medium">Log out</p>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -68,4 +68,4 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default TopNav;

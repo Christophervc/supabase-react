@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
+import { supabase } from "@/supabase/client";
+import { Button } from "@/components/ui/button";
+import TopNav from "@/components/TopNav";
 import TaskForm from "../components/TaskForm";
 import TaskList from "../components/TaskList";
-import Header from "@/components/Header";
-import { Label } from "@/components/ui/label";
-import { supabase } from "@/supabase/client";
-import { useAuthStore } from "@/store/authStore";
 
 const Home = () => {
   const [showcompletedTask, setShowCompletedTask] = useState<boolean>(false);
@@ -19,29 +18,22 @@ const Home = () => {
     });
   }, [navigate]);
 
-  /**
-  useEffect(() => {
-    const user = supabase.auth.getUser();
-    if (!user) {
-      navigate("/login");
-    }
-  }, [navigate]); 
-   */
   return (
     <>
       <main className="container mx-auto  px-4  py-4">
-        <Header />
-        <div className="grid grid-cols-1 gap-4 lg:max-w-2/5 md:mx-auto py-4 ">
+        <TopNav />
+        <div className="grid grid-cols-1 gap-4 md:mx-auto md:max-w-3/5  xl:max-w-2/5 py-4 ">
           <TaskForm />
           <div className="flex flex-row justify-evenly">
-            <Label
-              className="cursor-pointer text-indigo-600 hover:border-b-2 hover:text-indigo-400 hover:underline-offset-1 font-bold"
+            <Button
+              variant="ghost"
+              className="cursor-pointer text-indigo-600 hover:border-b-2 hover:text-indigo-800 hover:underline-offset-1 font-bold"
               onClick={() => setShowCompletedTask(!showcompletedTask)}
             >
               {showcompletedTask
                 ? "Show pending tasks"
                 : "Show completed tasks"}
-            </Label>
+            </Button>
           </div>
           <TaskList completed={showcompletedTask} />
         </div>
