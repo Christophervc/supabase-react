@@ -8,12 +8,19 @@ interface TaskState {
   addTask: (
     task: Omit<Task, "id" | "created_at" | "completed" | "user_id">
   ) => void;
-  updateTask: (
+  toggleTask: (
     taskId: number,
-    updates: Partial<Omit<Task, "id" | "created_at" | "user_id" | "name" | "description">>
+    updates: Partial<
+      Omit<Task, "id" | "created_at" | "user_id" | "name" | "description">
+    >
   ) => void;
   deleteTask: (taskId: number) => void;
   getTasks: (completed?: boolean) => Promise<void>;
+  updateTask: (
+    taskId: number,
+    newName: string,
+    newDescription: string | undefined
+  ) => void;
 }
 
 export const useTaskStore = create<TaskState>((set) => ({
@@ -77,9 +84,11 @@ export const useTaskStore = create<TaskState>((set) => ({
     }
   },
 
-  updateTask: async (
+  toggleTask: async (
     taskId: number,
-    updates: Partial<Omit<Task, "id" | "created_at" | "user_id" | "name" | "description">>
+    updates: Partial<
+      Omit<Task, "id" | "created_at" | "user_id" | "name" | "description">
+    >
   ) => {
     const {
       data: { user },
@@ -116,5 +125,40 @@ export const useTaskStore = create<TaskState>((set) => ({
     set((state) => ({
       tasks: state.tasks.filter((task) => task.id !== taskId),
     }));
+  },
+
+  updateTask: async (
+    taskId: number,
+    newTaskName: string,
+    newTaskDescription: string | undefined
+  ) => {
+
+    try {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+  
+      const { error } = await supabase
+        .from("tasks")
+        .update({ name: newTaskName, description: newTaskDescription })
+        .eq("user_id", user?.id || "")
+        .eq("id", taskId)
+        .select();
+  
+      if (error) throw error;
+  
+      set((state) => ({
+        tasks: state.tasks.map((task) =>
+          task.id === taskId
+            ? { ...task, name: newTaskName, description: newTaskDescription }
+            : task
+        ),
+      }));
+      
+    } catch (error) {
+      console.error("Error updating task:", error);
+      
+    }
+    
   },
 }));
