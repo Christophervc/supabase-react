@@ -5,6 +5,7 @@ import { Routes, Route, useNavigate } from "react-router";
 import NotFound from "./pages/NotFound";
 import { useEffect } from "react";
 import { supabase } from "./supabase/client";
+import { ThemeProvider } from "./components/ThemeProvide";
 
 function App() {
   const navigate = useNavigate();
@@ -15,7 +16,9 @@ function App() {
         navigate("/");
       }
     });
-    const {data: { subscription }} = supabase.auth.onAuthStateChange((event) => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event) => {
       if (event === "SIGNED_IN") {
         navigate("/", { replace: true });
       } else if (event === "SIGNED_OUT") {
@@ -25,14 +28,15 @@ function App() {
     return () => subscription.unsubscribe();
   }, [navigate]);
 
-  
   return (
     <>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
+      <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </ThemeProvider>
     </>
   );
 }

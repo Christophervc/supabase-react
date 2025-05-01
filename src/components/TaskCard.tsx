@@ -1,6 +1,5 @@
 import { Task } from "../types/task";
 import { useTaskStore } from "../store/taskStore";
-
 import {
   Card,
   CardContent,
@@ -13,14 +12,15 @@ import { Button } from "./ui/button";
 import { Trash } from "lucide-react";
 
 const TaskCard = (task: Task) => {
-  const { deleteTask, updateTask } = useTaskStore();
+  //const [editing, setEditing] = useState(false)
+  const { deleteTask, toggleTask } = useTaskStore();
 
   const handleDelete = () => {
     deleteTask(task.id);
   };
 
-  const handleUpdate = () => {
-    updateTask(task.id, { completed: !task.completed });
+  const handleToggleTask = () => {
+    toggleTask(task.id, { completed: !task.completed });
   };
 
   return (
@@ -32,14 +32,20 @@ const TaskCard = (task: Task) => {
             {task.completed ? "Completed" : "Not Completed"}
           </CardDescription>
         </CardHeader>
-        { task.description && (<CardContent>{task.description}</CardContent>)}
-        
-        <CardFooter className="flex flex-row gap-3">
-          <Button className="cursor-pointer" onClick={() => handleUpdate()}>
-            {task.completed ? "Undo" : "Done"}
+        {task.description && <CardContent>{task.description}</CardContent>}
+
+        <CardFooter className="flex flex-row justify-end gap-2">
+          <Button variant={"secondary"} size={"sm"} className="cursor-pointer" onClick={() => handleToggleTask()}>
+            {task.completed ? "Undo" : "Done" }
           </Button>
-          <Button variant="destructive" className="cursor-pointer"  onClick={() => handleDelete()}>
-            <Trash className="w-4 h-4 mr-1" />
+
+          <Button
+            variant="destructive"
+            className="cursor-pointer"
+            size={"sm"}
+            onClick={() => handleDelete()}
+          >
+            <Trash className="w-4 h-4" />
             Delete
           </Button>
         </CardFooter>

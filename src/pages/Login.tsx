@@ -31,13 +31,13 @@ const Login = () => {
 
   return (
     <>
-      <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-12 sm:px-6 lg:px-8">
+      <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-slate-900 px-4 py-12 sm:px-6 lg:px-8">
         <Card className="w-full max-w-md">
           <CardHeader>
             <CardTitle className="text-2xl font-bold text-center">
               Sign in
             </CardTitle>
-            <CardDescription className="text-center">
+            <CardDescription className="text-center bg:gray-50 dark:bg-slate-900 text-sm text-gray-500">
               Choose your preferred sign in method
             </CardDescription>
           </CardHeader>
@@ -83,7 +83,7 @@ const Login = () => {
                 <Separator className="w-full" />
               </div>
               <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-white px-2 text-muted-foreground">
+                <span className="dark: px-2 text-muted-foreground bg:gray-50 dark:bg-slate-900 dark:text-slate-200">
                   Or continue with
                 </span>
               </div>

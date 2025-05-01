@@ -20,14 +20,14 @@ const Home = () => {
 
   return (
     <>
-      <main className="container mx-auto  px-4  py-4">
+      <main className="container mx-auto px-4 py-4">
         <TopNav />
         <div className="grid grid-cols-1 gap-4 md:mx-auto md:max-w-3/5  xl:max-w-2/5 py-4 ">
           <TaskForm />
-          <div className="flex flex-row justify-evenly">
+          <div className="flex justify-center">
             <Button
               variant="ghost"
-              className="cursor-pointer text-indigo-600 hover:border-b-2 hover:text-indigo-800 hover:underline-offset-1 font-bold"
+              className="cursor-pointer text-indigo-600  hover:text-indigo-500  font-bold"
               onClick={() => setShowCompletedTask(!showcompletedTask)}
             >
               {showcompletedTask

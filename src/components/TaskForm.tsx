@@ -52,7 +52,7 @@ const TaskForm = () => {
               />
             </CardContent>
             <CardFooter>
-              <Button type="submit" className="w-full cursor-pointer">
+              <Button variant={"primary"} type="submit" className="w-full cursor-pointer">
                 Add Task
               </Button>
             </CardFooter>
