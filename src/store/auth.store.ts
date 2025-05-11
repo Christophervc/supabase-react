@@ -2,6 +2,7 @@
 import { create } from "zustand";
 import { supabase } from "../supabase/client";
 import { User } from "@supabase/supabase-js";
+import { loginWithGoogle,  loginWithGitHub , loginWithMagicLink } from "@/services/auth.service";
 
 interface AuthState {
   user: User | null;
@@ -33,16 +34,6 @@ export const useAuthStore = create<AuthState>((set) => {
 
   initialize();
 
-  supabase.auth.onAuthStateChange((event, session) => {
-    console.log(event, session);
-    if (session) {
-      set({ user: session.user });
-    } else {
-      set({ user: null });
-    }
-  });
-
-  const redirectUrl = import.meta.env.VITE_SUPABASE_CALLBACK_URL as string;
 
   return {
     user: null,
@@ -54,15 +45,7 @@ export const useAuthStore = create<AuthState>((set) => {
     loginWithMagicLink: async (email: string) => {
       try {
         set({ loading: true, error: null, sent: false });
-
-        const { error } = await supabase.auth.signInWithOtp({
-          email,
-          options:{
-            emailRedirectTo: redirectUrl
-          },
-        });
-
-        if (error) throw error;
+        await loginWithMagicLink(email);
         set({ loading: false, sent: true });
       } catch (error: any) {
         console.log(error);
@@ -73,13 +56,7 @@ export const useAuthStore = create<AuthState>((set) => {
     loginWithGitHub: async () => {
       try {
         set({ loading: true, error: null });
-        const { error } = await supabase.auth.signInWithOAuth({
-          provider: "github",
-          options: {
-            redirectTo: redirectUrl,
-          },
-        });
-        if (error) throw error;
+        await loginWithGitHub();
         set({ loading: false });
       } catch (error: any) {
         console.error("Error logging in with GitHub:", error);
@@ -90,14 +67,7 @@ export const useAuthStore = create<AuthState>((set) => {
     loginWithGoogle: async () => {
       try {
         set({ loading: true, error: null });
-        const { error } = await supabase.auth.signInWithOAuth({
-          provider: "google",
-          options: {
-            redirectTo: redirectUrl,
-          },
-        });
-
-        if (error) throw error;
+        await loginWithGoogle();
         set({ loading: false });
       } catch (error: any) {
         console.error("Error logging in with Google:", error);

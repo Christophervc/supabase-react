@@ -16,9 +16,7 @@ function App() {
         navigate("/");
       }
     });
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((event) => {
+    const {data: { subscription }} = supabase.auth.onAuthStateChange((event) => {
       if (event === "SIGNED_IN") {
         navigate("/", { replace: true });
       } else if (event === "SIGNED_OUT") {

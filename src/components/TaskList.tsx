@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useTaskStore } from "../store/taskStore";
+import { useTaskStore } from "../store/task.store";
 import TaskCard from "./TaskCard";
 import { Spinner } from "./ui/spinner";
 import { NotebookPenIcon } from "lucide-react";

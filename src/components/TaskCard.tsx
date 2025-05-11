@@ -1,5 +1,5 @@
 import { Task } from "../types/task";
-import { useTaskStore } from "../store/taskStore";
+import { useTaskStore } from "../store/task.store";
 import {
   Card,
   CardContent,
@@ -27,16 +27,35 @@ const TaskCard = (task: Task) => {
     <>
       <Card>
         <CardHeader className="flex flex-row justify-between">
-          <CardTitle className="text-bold">{task.name}</CardTitle>
+          <CardTitle
+            className={`text-bold ${
+              task.completed ? "line-through text-muted-foreground" : ""
+            }`}
+          >
+            {task.name}
+          </CardTitle>
           <CardDescription>
             {task.completed ? "Completed" : "Not Completed"}
           </CardDescription>
         </CardHeader>
-        {task.description && <CardContent>{task.description}</CardContent>}
+        {task.description && (
+          <CardContent
+            className={`text-sm ${
+              task.completed ? "line-through text-muted-foreground" : ""
+            }`}
+          >
+            {task.description}
+          </CardContent>
+        )}
 
         <CardFooter className="flex flex-row justify-end gap-2">
-          <Button variant={"secondary"} size={"sm"} className="cursor-pointer" onClick={() => handleToggleTask()}>
-            {task.completed ? "Undo" : "Done" }
+          <Button
+            variant={"secondary"}
+            size={"sm"}
+            className="cursor-pointer"
+            onClick={() => handleToggleTask()}
+          >
+            {task.completed ? "Undo" : "Done"}
           </Button>
 
           <Button
