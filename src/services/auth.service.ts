@@ -1,5 +1,5 @@
 import { supabase } from "@/supabase/client";
-const redirectUrl = import.meta.env.VITE_SUPABASE_CALLBACK_URL as string;
+const redirectUrl = import.meta.env.VITE_PROD_CALLBACK_URL as string;
 
 export const loginWithMagicLink = async (email: string) => {
   const { error } = await supabase.auth.signInWithOtp({
