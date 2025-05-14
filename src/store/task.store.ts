@@ -19,7 +19,7 @@ interface TaskState {
   updateTask: (
     taskId: number,
     newName: string,
-    newDescription: string | undefined
+    newDescription: string | " "
   ) => void;
 }
 
@@ -127,12 +127,7 @@ export const useTaskStore = create<TaskState>((set) => ({
     }));
   },
 
-  updateTask: async (
-    taskId: number,
-    newTaskName: string,
-    newTaskDescription: string | undefined
-  ) => {
-
+  updateTask: async (taskId: number, newTaskName: string, newTaskDescription: string | " ") => {
     try {
       const {
         data: { user },
@@ -157,7 +152,6 @@ export const useTaskStore = create<TaskState>((set) => ({
       
     } catch (error) {
       console.error("Error updating task:", error);
-      
     }
     
   },
