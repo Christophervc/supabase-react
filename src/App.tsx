@@ -6,6 +6,7 @@ import NotFound from "./pages/NotFound";
 import { useEffect } from "react";
 import { supabase } from "./supabase/client";
 import { ThemeProvider } from "./components/ThemeProvide";
+import { initAuthListener } from "./helpers/auth.helper";
 
 function App() {
   const navigate = useNavigate();
@@ -13,10 +14,12 @@ function App() {
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) {
-        navigate("/");
+        navigate("/", { replace: true });
       }
     });
-    const {data: { subscription }} = supabase.auth.onAuthStateChange((event) => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event) => {
       if (event === "SIGNED_IN") {
         navigate("/", { replace: true });
       } else if (event === "SIGNED_OUT") {
@@ -25,6 +28,10 @@ function App() {
     });
     return () => subscription.unsubscribe();
   }, [navigate]);
+
+  useEffect(() => {
+    initAuthListener();
+  }, []);
 
   return (
     <>

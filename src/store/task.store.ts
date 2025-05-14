@@ -1,6 +1,7 @@
 import { Task } from "../types/task";
 import { create } from "zustand";
 import { supabase } from "../supabase/client";
+import { getCurrentUser } from "@/helpers/auth.helper";
 
 interface TaskState {
   tasks: Task[];
@@ -30,9 +31,11 @@ export const useTaskStore = create<TaskState>((set) => ({
   getTasks: async (completed = false) => {
     set({ loading: true });
 
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    const user = await getCurrentUser();
+    if (!user) {
+      console.error("User not authenticated, please log in.");
+      return;
+    }
 
     const { data, error } = await supabase
       .from("tasks")
@@ -40,8 +43,7 @@ export const useTaskStore = create<TaskState>((set) => ({
       .eq("user_id", user?.id || "")
       .eq("completed", completed)
       .order("id", { ascending: true });
-
-    console.log(data);
+    //console.log(data);
 
     if (error) {
       console.error("Error fetching tasks:", error);
@@ -53,14 +55,12 @@ export const useTaskStore = create<TaskState>((set) => ({
   addTask: async (
     newTask: Omit<Task, "id" | "created_at" | "completed" | "user_id">
   ) => {
-    const { data } = await supabase.auth.getUser();
-    const { user } = data;
-    if (!user) {
-      console.error("User not authenticated, please log in.");
-      return;
-    }
-
     try {
+      const user = await getCurrentUser();
+      if (!user) {
+        console.error("User not authenticated, please log in.");
+        return;
+      }
       /*const {data: { user },} = await supabase.auth.getUser();*/
       const { data: insertedData, error } = await supabase
         .from("tasks")
@@ -74,7 +74,7 @@ export const useTaskStore = create<TaskState>((set) => ({
       if (error) throw error;
 
       if (insertedData && insertedData.length > 0) {
-        console.log("Task added successfully", insertedData[0]);
+        //console.log("Task added successfully", insertedData[0]);
         set((state) => ({
           tasks: [...state.tasks, { ...insertedData[0], completed: false }],
         }));
@@ -90,9 +90,11 @@ export const useTaskStore = create<TaskState>((set) => ({
       Omit<Task, "id" | "created_at" | "user_id" | "name" | "description">
     >
   ) => {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    const user = await getCurrentUser();
+    if (!user) {
+      console.error("User not authenticated, please log in.");
+      return;
+    }
     const { error } = await supabase
       .from("tasks")
       .update(updates)
@@ -107,9 +109,11 @@ export const useTaskStore = create<TaskState>((set) => ({
   },
 
   deleteTask: async (taskId: number) => {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    const user = await getCurrentUser();
+    if (!user) {
+      console.error("User not authenticated, please log in.");
+      return;
+    }
     const { error } = await supabase
       .from("tasks")
       .delete()
@@ -127,21 +131,26 @@ export const useTaskStore = create<TaskState>((set) => ({
     }));
   },
 
-  updateTask: async (taskId: number, newTaskName: string, newTaskDescription: string | " ") => {
+  updateTask: async (
+    taskId: number,
+    newTaskName: string,
+    newTaskDescription: string | " "
+  ) => {
     try {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-  
+      const user = await getCurrentUser();
+      if (!user) {
+        console.error("User not authenticated, please log in.");
+        return;
+      }
       const { error } = await supabase
         .from("tasks")
         .update({ name: newTaskName, description: newTaskDescription })
         .eq("user_id", user?.id || "")
         .eq("id", taskId)
         .select();
-  
+
       if (error) throw error;
-  
+
       set((state) => ({
         tasks: state.tasks.map((task) =>
           task.id === taskId
@@ -149,10 +158,8 @@ export const useTaskStore = create<TaskState>((set) => ({
             : task
         ),
       }));
-      
     } catch (error) {
       console.error("Error updating task:", error);
     }
-    
   },
 }));
