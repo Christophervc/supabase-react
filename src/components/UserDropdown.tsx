@@ -11,7 +11,7 @@ import {
 } from "./ui/dropdown-menu";
 import { useAuthStore } from "@/store/auth.store";
 
-const UserDropdown = () => {
+export const UserDropdown = () => {
   const logout = useAuthStore((state) => state.logout);
   const user = useAuthStore((state) => state.user);
   return (
@@ -52,5 +52,3 @@ const UserDropdown = () => {
     </DropdownMenu>
   );
 };
-
-export default UserDropdown;

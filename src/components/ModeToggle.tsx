@@ -8,7 +8,7 @@ import {
 } from "./ui/dropdown-menu";
 import { useTheme } from "./ThemeProvide";
 
-const ModeToggle = () => {
+export const ModeToggle = () => {
   const { setTheme } = useTheme();
   return (
     <DropdownMenu>
@@ -33,5 +33,3 @@ const ModeToggle = () => {
     </DropdownMenu>
   );
 };
-
-export default ModeToggle;

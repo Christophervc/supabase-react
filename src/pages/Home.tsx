@@ -1,26 +1,11 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router";
-import { supabase } from "@/supabase/client";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import TopNav from "@/components/TopNav";
+import { TopNav } from "@/components/TopNav";
 import { TaskForm } from "../components/TaskForm";
 import { TaskList } from "../components/TaskList";
 
-const Home = () => {
-  const [showcompletedTask, setShowCompletedTask] = useState<boolean>(false);
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    (async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      console.log("user", user);
-      if (!user) {
-        navigate("/login");
-      }
-    })();
-  }, [navigate]);
+export const Home = () => {
+  const [showcompletedTask, setShowCompletedTask] = useState(false);
 
   return (
     <>
@@ -45,5 +30,3 @@ const Home = () => {
     </>
   );
 };
-
-export default Home;
