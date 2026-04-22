@@ -23,8 +23,8 @@ const Login = () => {
   } = useAuthStore();
   const [email, setEmail] = useState<string>("");
 
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
+  const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
+    e.preventDefault();
     await loginWithMagicLink(email);
     setEmail("");
   };

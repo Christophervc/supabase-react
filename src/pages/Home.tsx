@@ -11,11 +11,15 @@ const Home = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data: { user } }) => {
+    (async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      console.log("user", user);
       if (!user) {
         navigate("/login");
       }
-    });
+    })();
   }, [navigate]);
 
   return (
