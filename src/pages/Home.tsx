@@ -3,8 +3,8 @@ import { useNavigate } from "react-router";
 import { supabase } from "@/supabase/client";
 import { Button } from "@/components/ui/button";
 import TopNav from "@/components/TopNav";
-import TaskForm from "../components/TaskForm";
-import TaskList from "../components/TaskList";
+import { TaskForm } from "../components/TaskForm";
+import { TaskList } from "../components/TaskList";
 
 const Home = () => {
   const [showcompletedTask, setShowCompletedTask] = useState<boolean>(false);

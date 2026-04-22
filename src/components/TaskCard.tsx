@@ -1,5 +1,7 @@
 import { Task } from "../types/task";
-import { useTaskStore } from "../store/task.store";
+import { useState } from "react";
+import { useTaskMutations } from "@/hooks/useTasks";
+
 import {
   Card,
   CardContent,
@@ -9,30 +11,29 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "./ui/button";
-import { MoreVertical} from "lucide-react";
+import { MoreVertical } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
-import { useState } from "react";
-import UpdateTaskDialog from "./UpdateTaskDialog";
+import { UpdateTaskDialog } from "./UpdateTaskDialog";
 
-const TaskCard = (task: Task) => {
+export const TaskCard = (task: Task) => {
   const [isUpdateOpen, setIsUpdateOpen] = useState(false);
-  const { deleteTask, toggleTask, updateTask } = useTaskStore();
+  const { deleteTask, toggleTask, updateTask } = useTaskMutations();
 
-  const handleDelete = () => {
-    deleteTask(task.id);
+  const handleDelete = async () => {
+    await deleteTask(task.id);
   };
 
-  const handleToggleTask = () => {
-    toggleTask(task.id, { completed: !task.completed });
+  const handleToggleTask = async () => {
+    await toggleTask({ id: task.id, completed: !task.completed });
   };
 
   const handleUpdateTask = async (name: string, description: string) => {
-    await updateTask(task.id, name, description);
+    await updateTask({ id: task.id, name, description });
     setIsUpdateOpen(false);
   };
 
@@ -52,7 +53,7 @@ const TaskCard = (task: Task) => {
               variant={"ghost"}
               size={"sm"}
               className="cursor-pointer"
-              onClick={() => handleToggleTask()}
+              onClick={handleToggleTask}
             >
               {task.completed ? "Undo" : "Done"}
             </Button>
@@ -69,7 +70,7 @@ const TaskCard = (task: Task) => {
                   Update
                 </DropdownMenuItem>
                 <DropdownMenuItem
-                  onClick={() => handleDelete()}
+                  onClick={handleDelete}
                   className="text-destructive"
                 >
                   Delete
@@ -88,32 +89,15 @@ const TaskCard = (task: Task) => {
           </CardContent>
         )}
 
-        <CardFooter className="flex flex-row justify-end gap-2 text-sm">
-          {/*task.completed ? "Completed" : "Not Completed"*/}
-          {/* 
-          <Button
-            variant="destructive"
-            className="cursor-pointer"
-            size={"sm"}
-            onClick={() => handleDelete()}
-          >
-            <Trash className="w-4 h-4" />
-            Delete
-          </Button>
-          */}
-        </CardFooter>
+        <CardFooter className="flex flex-row justify-end gap-2 text-sm"></CardFooter>
       </Card>
-
+      {/* Modal de edicion (se activa mediante el boton de los tres puntos) */}
       <UpdateTaskDialog
         task={task}
         open={isUpdateOpen}
         onOpenChange={setIsUpdateOpen}
-        onUpdate={(name, description) => {
-          handleUpdateTask(name, description);
-        }}
+        onUpdate={handleUpdateTask}
       />
     </>
   );
 };
-
-export default TaskCard;

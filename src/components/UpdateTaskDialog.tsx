@@ -1,6 +1,12 @@
 import { Task } from "@/types/task";
 import { useEffect, useState } from "react";
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "./ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "./ui/dialog";
 import { Label } from "@radix-ui/react-dropdown-menu";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
@@ -13,7 +19,12 @@ interface Props {
   onOpenChange: (open: boolean) => void;
   onUpdate: (name: string, description: string) => void;
 }
-const UpdateTaskDialog = ({ task, open, onOpenChange, onUpdate }: Props) => {
+export const UpdateTaskDialog = ({
+  task,
+  open,
+  onOpenChange,
+  onUpdate,
+}: Props) => {
   const [name, setName] = useState(task.name);
   const [description, setDescription] = useState(task.description);
 
@@ -24,7 +35,7 @@ const UpdateTaskDialog = ({ task, open, onOpenChange, onUpdate }: Props) => {
     }
   }, [open, task]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (name.trim()) {
       onUpdate(name, description || "");
@@ -73,5 +84,3 @@ const UpdateTaskDialog = ({ task, open, onOpenChange, onUpdate }: Props) => {
     </Dialog>
   );
 };
-
-export default UpdateTaskDialog;
