@@ -1,5 +1,6 @@
 import "./App.css";
-import { ThemeProvider } from "./components/ThemeProvide";
+import { Toaster } from "sonner";
+import { ThemeProvider } from "./components/shared/ThemeProvider";
 import { AppRouter } from "./router/AppRouter";
 
 function App() {
@@ -7,6 +8,7 @@ function App() {
     <>
       <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
         <AppRouter />
+        <Toaster position="top-center" richColors />
       </ThemeProvider>
     </>
   );

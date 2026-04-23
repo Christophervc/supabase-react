@@ -1,6 +1,6 @@
-import { Avatar, AvatarImage, AvatarFallback } from "./ui/avatar";
+import { Avatar, AvatarImage, AvatarFallback } from "../ui/avatar";
 import { LogOut } from "lucide-react";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,12 +8,14 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "./ui/dropdown-menu";
+} from "../ui/dropdown-menu";
+import { useAuthMutations } from "@/hooks/useAuth";
 import { useAuthStore } from "@/store/auth.store";
 
 export const UserDropdown = () => {
-  const logout = useAuthStore((state) => state.logout);
+  const { logout } = useAuthMutations();
   const user = useAuthStore((state) => state.user);
+  const initals = user?.email?.slice(0, 2).toUpperCase();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -26,9 +28,7 @@ export const UserDropdown = () => {
               src={user?.user_metadata.avatar_url}
               alt={user?.user_metadata.full_name}
             />
-            <AvatarFallback>
-              {user?.user_metadata.full_name?.charAt(0).toUpperCase()}
-            </AvatarFallback>
+            <AvatarFallback>{initals}</AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
@@ -44,7 +44,7 @@ export const UserDropdown = () => {
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={logout} className="cursor-pointer">
+        <DropdownMenuItem onClick={() => logout()} className="cursor-pointer">
           <LogOut className="mr-2 h-4 w-4" />
           <p className="font-medium">Log out</p>
         </DropdownMenuItem>

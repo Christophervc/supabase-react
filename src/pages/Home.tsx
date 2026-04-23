@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { TopNav } from "@/components/TopNav";
 import { TaskForm } from "../components/TaskForm";
 import { TaskList } from "../components/TaskList";
+import { TopNav } from "@/components/shared";
 
 export const Home = () => {
   const [showcompletedTask, setShowCompletedTask] = useState(false);
